@@ -25,6 +25,7 @@ part 'src/types/polygon.dart';
 part 'src/types/polyline_style.dart';
 part 'src/types/polyline.dart';
 part 'src/types/suggest_item.dart';
+part 'src/types/visible_region.dart';
 part 'src/yandex_map.dart';
 part 'src/yandex_map_controller.dart';
 part 'src/yandex_search.dart';

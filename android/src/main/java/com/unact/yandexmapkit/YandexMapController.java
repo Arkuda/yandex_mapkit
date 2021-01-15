@@ -33,6 +33,7 @@ import com.yandex.mapkit.map.CameraUpdateReason;
 import com.yandex.mapkit.map.CameraListener;
 import com.yandex.mapkit.map.RotationType;
 import com.yandex.mapkit.map.SizeChangedListener;
+import com.yandex.mapkit.map.VisibleRegion;
 import com.yandex.mapkit.mapview.MapView;
 import com.yandex.mapkit.user_location.UserLocationLayer;
 import com.yandex.mapkit.user_location.UserLocationObjectListener;
@@ -465,6 +466,25 @@ public class YandexMapController implements PlatformView, MethodChannel.MethodCa
     );
   }
 
+  private Map<String, Object> getVisibleRegion(){
+    VisibleRegion vr = mapView.getMap().getVisibleRegion();
+    Map<String,Object> resultObject = new HashMap<>();
+
+    resultObject.put("topLeft", pointToJson(vr.getTopLeft()));
+    resultObject.put("topRight", pointToJson(vr.getTopRight()));
+    resultObject.put("bottomLeft", pointToJson(vr.getBottomLeft()));
+    resultObject.put("bottomRight", pointToJson(vr.getBottomRight()));
+
+    return resultObject;
+  }
+
+  private Map<String, Object> pointToJson(Point point){
+    Map<String, Object> arguments = new HashMap<>();
+    arguments.put("latitude", point.getLatitude());
+    arguments.put("longitude", point.getLongitude());
+    return arguments;
+  }
+
   @Override
   public void onMethodCall(MethodCall call, MethodChannel.Result result) {
     switch (call.method) {
@@ -547,6 +567,9 @@ public class YandexMapController implements PlatformView, MethodChannel.MethodCa
       case "moveToUser":
         moveToUser();
         result.success(null);
+        break;
+      case "getVisibleRegion":
+        result.success(getVisibleRegion());
         break;
       default:
         result.notImplemented();

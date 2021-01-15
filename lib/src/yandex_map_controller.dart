@@ -167,7 +167,7 @@ class YandexMapController extends ChangeNotifier {
       'enableCameraTracking',
       placemarkStyle != null ? _placemarkStyleParams(placemarkStyle) : null
     );
-    return Point(latitude: point['latitude'], longitude: point['longitude']);
+    return Point(latitude: point['latitude']as double, longitude: point['longitude']as double);
   }
 
   /// Does nothing if passed `Placemark` wasn't added before
@@ -222,10 +222,15 @@ class YandexMapController extends ChangeNotifier {
     await _channel.invokeMethod<void>('moveToUser');
   }
 
+  Future<VisibleRegion> getVisibleRegion() async {
+    return VisibleRegion.fromJson(
+        await _channel.invokeMethod<dynamic>('getVisibleRegion'));
+  }
+
   /// Returns current camera position point
   Future<Point> getTargetPoint() async {
     final dynamic point = await _channel.invokeMethod<dynamic>('getTargetPoint');
-    return Point(latitude: point['latitude'], longitude: point['longitude']);
+    return Point(latitude: point['latitude']as double, longitude: point['longitude']as double);
   }
 
   Future<void> _handleMethodCall(MethodCall call) async {
@@ -251,16 +256,16 @@ class YandexMapController extends ChangeNotifier {
   }
 
   void _onMapTap(dynamic arguments) {
-    _yandexMapState.onMapTap(Point(latitude: arguments['latitude'], longitude: arguments['longitude']));
+    _yandexMapState.onMapTap(Point(latitude: arguments['latitude'] as double, longitude: arguments['longitude'] as double));
   }
 
   void _onMapLongTap(dynamic arguments) {
-    _yandexMapState.onMapLongTap(Point(latitude: arguments['latitude'], longitude: arguments['longitude']));
+    _yandexMapState.onMapLongTap(Point(latitude: arguments['latitude'] as double, longitude: arguments['longitude'] as double));
   }
 
   void _onMapObjectTap(dynamic arguments) {
-    final int hashCode = arguments['hashCode'];
-    final Point point = Point(latitude: arguments['latitude'], longitude: arguments['longitude']);
+    final int hashCode = arguments['hashCode'] as int;
+    final Point point = Point(latitude: arguments['latitude'] as double, longitude: arguments['longitude'] as double);
 
     final Placemark placemark = placemarks.
       firstWhere((Placemark placemark) => placemark.hashCode == hashCode, orElse: () => null);
@@ -276,7 +281,7 @@ class YandexMapController extends ChangeNotifier {
       _yandexMapState.onMapRendered();
     }
 
-    _yandexMapState.onMapSizeChanged(MapSize(width: arguments['width'], height: arguments['height']));
+    _yandexMapState.onMapSizeChanged(MapSize(width: arguments['width'] as int, height: arguments['height'] as int));
   }
 
   void _onCameraPositionChanged(dynamic arguments) {

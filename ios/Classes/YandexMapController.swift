@@ -105,6 +105,8 @@ public class YandexMapController: NSObject, FlutterPlatformView {
     case "moveToUser":
       moveToUser()
       result(nil)
+    case "getVisibleRegion":
+      result(getVisibleRegion())
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -166,6 +168,37 @@ public class YandexMapController: NSObject, FlutterPlatformView {
 
   public func zoomOut() {
     zoom(-1)
+  }
+
+  public func getVisibleRegion() -> [String: Any] {
+    let visibleReg = mapView.mapWindow.focusRegion
+    
+    let topLeft : [String: Any] = [
+        "latitude": visibleReg.topLeft.latitude,
+        "longitude": visibleReg.topLeft.longitude
+      ]
+    
+    let topRight : [String: Any] = [
+        "latitude": visibleReg.topRight.latitude,
+        "longitude": visibleReg.topRight.longitude
+      ]
+    
+    let bottomRight : [String: Any] = [
+        "latitude": visibleReg.bottomRight.latitude,
+        "longitude": visibleReg.bottomRight.longitude
+      ]
+    
+    let bottomLeft : [String: Any] = [
+        "latitude": visibleReg.bottomLeft.latitude,
+        "longitude": visibleReg.bottomLeft.longitude
+      ]
+    
+    return [
+        "topLeft": topLeft,
+        "topRight": topRight,
+        "bottomLeft": bottomLeft,
+        "bottomRight": bottomRight
+    ];
   }
 
   private func zoom(_ step: Float) {
